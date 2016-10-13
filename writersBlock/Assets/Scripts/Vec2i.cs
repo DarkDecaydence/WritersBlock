@@ -47,4 +47,14 @@ public struct Vec2i
             return x.GetHashCode() ^ y.GetHashCode();
         }
     }
+
+    public Vector3 ToVec3()
+    {
+        return new Vector3(x, 0, y);
+    }
+
+    public static Vector3 Lerp(Vec2i a, Vec2i b, float t, float y)
+    {
+        return Vector3.Lerp(new Vector3(a.x, y, a.y), new Vector3(b.x, y, b.y), t);   
+    }
 }

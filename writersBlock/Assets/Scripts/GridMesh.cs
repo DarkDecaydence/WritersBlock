@@ -33,7 +33,6 @@ public class GridMesh : MonoBehaviour {
             }
         }
 
-        Debug.Log(vertices.Count);
         mesh.SetVertices(vertices);
         mesh.SetTriangles(indices, 0);
         mesh.SetUVs(0, uv);

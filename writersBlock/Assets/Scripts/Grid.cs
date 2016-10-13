@@ -11,12 +11,12 @@ public class Grid : MonoBehaviour {
     public GameObject gridChunk;
     List<GridMesh> gridChunks;
 
-    void Start()
+    void Awake()
     {
         GameData.grid = this;
         grid = new Tile[sizeX * chunkSizeX, sizeY * chunkSizeY];
-
         createGridMesh();
+
     }
 
     void createGridMesh()
@@ -43,7 +43,6 @@ public class Grid : MonoBehaviour {
         {
             for (int x = 0; x < chunkSizeY; x++, i++)
             {
-                Debug.Log("Triangulazing at " + x * sizeX + ", " + y * sizeY);
                 gridChunks[i].triangulizeGrid(grid, x * sizeX, y * sizeY, sizeX, sizeY);
             }
         }
