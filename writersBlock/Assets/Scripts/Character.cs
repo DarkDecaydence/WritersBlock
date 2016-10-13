@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Character : MonoBehaviour {
 
-    Vec2i pos;
+    public Vec2i pos;
 
-    void Start()
+    void Awake()
     {
         GameData.playerCharacter = this;
         setPostion(new Vec2i(1, 1));
