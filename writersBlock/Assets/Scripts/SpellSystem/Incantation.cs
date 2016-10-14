@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using UnityEngine;
 
-public class Incantation
+public class Incantation : ScriptableObject
 {
-    //public Incantation(string rawIncantation)
-    //{
-    //    var incantationParts = SerializeIncantation(rawIncantation);
+    public static Incantation MisfireIncantation
+    {
+        get
+        {
+            var defaultSpellData = new SpellData(SpellElement.Invalid, SpellType.Invalid, 0);
+            return new Incantation(defaultSpellData);
+        }
+    }
 
-    //    if (incantationParts.Length <= 1) {
-    //        // Botched incantation.
-    //    } else {
-    //        if (incantationParts[0] == "verthivers") {
-    //            // Create draconic spell
-    //        } else {
-    //            // Create other spell
-    //        }
-    //    }
-    //}
+    private SpellData data;
+
+    public Incantation(SpellData data)
+    {
+        this.data = data;
+    }
 }

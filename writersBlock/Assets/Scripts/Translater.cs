@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class Translater : MonoBehaviour {
 
@@ -16,10 +17,13 @@ public class Translater : MonoBehaviour {
 
         switch (command)
         {
+            case "m":
             case "move":
-                return interpretMove(partMessages); ;
+                return interpretMove(partMessages);
             case "attack":            
-                return interpretAttack(partMessages); ;
+                return interpretAttack(partMessages);
+            case "cast":
+                return interpretSpell(string.Join(" ", partMessages.Skip(1).ToArray()));
             default:
                 return new Message(false, "*WinkyFace*");
         }
@@ -40,15 +44,19 @@ public class Translater : MonoBehaviour {
         bool moveValidity;
         switch (direction)
         {
+            case "l":
             case "left":
                 moveValidity = GameData.playerCharacter.move(new Vec2i(-1, 0));
                 break;
+            case "r":
             case "right":
                 moveValidity = GameData.playerCharacter.move(new Vec2i(1, 0));
                 break;
+            case "u":
             case "up":
                 moveValidity = GameData.playerCharacter.move(new Vec2i(0, 1));
                 break;
+            case "d":
             case "down":
                 moveValidity = GameData.playerCharacter.move(new Vec2i(0, -1));
                 break;
@@ -58,6 +66,14 @@ public class Translater : MonoBehaviour {
         }
 
         return new Message(moveValidity, "Slamming into a wall eh?");
+    }
+
+    private Message interpretSpell(string rawIncantation)
+    {
+        IncantationBuilder ib = new IncantationBuilder();
+        ib.Expand(rawIncantation);
+        var isValid = ib.HasValidElement && ib.HasValidType && ib.IsValidLanguage && !ib.IsRambling;
+        return new Message(isValid, ib.ToString());
     }
 }
 

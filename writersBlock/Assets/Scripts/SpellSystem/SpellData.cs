@@ -5,7 +5,7 @@ using System.Text;
 
 public enum SpellType
 {
-    Invalid, Ball, Line, Wall, Shield, Nova
+    Invalid, Ball, Blast, Wall, Shield
 }
 
 public enum SpellElement

@@ -30,25 +30,27 @@ public class IncantationBuilder
 
     #region Spell types
     public static List<string> EnglishTypes = new List<string>() {
-
+        "ball", "blast", "wall", "shield"
     };
 
     public static List<string> LatinTypes = new List<string>() {
-
+        "globus", "flatus", "murus", "arma"
     };
 
     public static List<string> DraconicTypes = new List<string>() {
         // Draconic words for "Line" and "Nova" doesn't exist.
-        // Words here are "Ball", "Wall" and "Shield" 
-        "garmth", "dos", "fethos"
+        // Words here are "Ball", "Blast", "Wall" and "Shield" 
+        "garmth", "drevab", "dos", "fethos"
     };
+    #endregion
 
     public static IEnumerable<string> AllTypes { get { return EnglishTypes.Concat(LatinTypes.Concat(DraconicTypes)); } }
-    #endregion
 
     #endregion
 
-    public int ChargeLevel { get; private set; }
+    // Expression describing how charged the spell is.
+    // Implement if time allows it.
+    //public int ChargeLevel { get; private set; }
 
     private readonly List<IncantationLanguage> attemptedLanguages = new List<IncantationLanguage>();
     public bool IsValidLanguage
@@ -68,7 +70,8 @@ public class IncantationBuilder
     public bool IsRambling { get { return Ramblings.Count > 0; } }
 
     // Should be used for more complex calculation of spell power.
-    // Add if time allows.
+    // Add if time allows. 
+    // NOTE: Recursive architecture is better suited for this.
     //public float Precision { get; private set; }
 
     public void Expand(string input)
@@ -89,7 +92,18 @@ public class IncantationBuilder
                 }
             }
             else if (AllTypes.Contains(s)) {
-
+                if (EnglishTypes.Contains(s)) {
+                    attemptedTypes.Add(ToType(s));
+                    attemptedLanguages.Add(IncantationLanguage.English);
+                }
+                else if (LatinTypes.Contains(s)) {
+                    attemptedTypes.Add(ToType(s));
+                    attemptedLanguages.Add(IncantationLanguage.Latin);
+                }
+                else {
+                    attemptedTypes.Add(ToType(s));
+                    attemptedLanguages.Add(IncantationLanguage.Draconic);
+                }
             }
             else {
                 Ramblings.Add(s);
@@ -99,7 +113,57 @@ public class IncantationBuilder
 
     public Incantation ToIncantation()
     {
-        return null;
+        // Checks whether the incantation is correctly constructed.
+        if (IsRambling || !HasValidElement || !HasValidType || !IsValidLanguage)
+            return Incantation.MisfireIncantation;
+
+        SpellData incantationData = new SpellData(attemptedElements.FirstOrDefault(), attemptedTypes.FirstOrDefault(), PowerFromLanguage(attemptedLanguages.FirstOrDefault()));
+        return new Incantation(incantationData);
+    }
+
+    public override string ToString()
+    {
+        if (IsRambling)
+            return "Rambling Incantation";
+
+        if (!IsValidLanguage)
+            return "Mispronounced Incantation";
+
+        if (!HasValidElement)
+            return "Multi-Elemental Incantation";
+
+        if (!HasValidType)
+            return "Mistyped Incantation";
+        
+        string element, type, language;
+        switch (attemptedLanguages.First()) {
+            case IncantationLanguage.English:
+                language = "english"; break;
+            case IncantationLanguage.Latin:
+                language = "latin"; break;
+            case IncantationLanguage.Draconic:
+                language = "draconic"; break;
+            default: throw new Exception("Enum had unidentified type or 'Invalid' when impossible; Correct switch cases.");
+
+        }
+        switch (attemptedElements.First()) {
+            case SpellElement.Arcane:   element = "arcane"; break;
+            case SpellElement.Earth:    element = "earth"; break;
+            case SpellElement.Water:    element = "water"; break;
+            case SpellElement.Fire:     element = "fire"; break;
+            case SpellElement.Air:      element = "air"; break;
+            case SpellElement.Void:     element = "void"; break;
+            default: throw new Exception("Enum had unidentified type or 'Invalid' when impossible; Correct switch cases.");
+        }
+        switch (attemptedTypes.First()) {
+            case SpellType.Ball:    type = "ball"; break;
+            case SpellType.Blast:   type = "blast"; break;
+            case SpellType.Wall:    type = "wall"; break;
+            case SpellType.Shield:  type = "shield"; break;
+            default: throw new Exception("Enum had unidentified type or 'Invalid' when impossible; Correct switch cases.");
+        }
+
+        return string.Format("({0}) {1}{2}", language, element, type);
     }
 
     #region Private helper methods
@@ -131,13 +195,48 @@ public class IncantationBuilder
             case "amuul":
                 return SpellElement.Void;
             default:
+                UnityEngine.Debug.Log("Didn't recognize SpellElement. Coercing to 'Invalid'");
                 return SpellElement.Invalid;
         }
     }
 
     private SpellType ToType(string s)
     {
-        return SpellType.Invalid;
+        switch (s) {
+            case "ball":
+            case "globus":
+            case "garmth":
+                return SpellType.Ball;
+            case "blast":
+            case "flatus":
+            case "drevab":
+                return SpellType.Blast;
+            case "wall":
+            case "murus":
+            case "dos":
+                return SpellType.Wall;
+            case "shield":
+            case "arma":
+            case "fethos":
+                return SpellType.Shield;
+            default:
+                UnityEngine.Debug.Log("Didn't recognize SpellType. Coercing to 'Invalid'");
+                return SpellType.Invalid;
+        }
+    }
+
+    private int PowerFromLanguage(IncantationLanguage l)
+    {
+        switch (l) {
+            case IncantationLanguage.English:
+                return 2;
+            case IncantationLanguage.Latin:
+                return 4;
+            case IncantationLanguage.Draconic:
+                return 7;
+            default:
+                return 0;
+        }
     }
 
     private string[] SerializeIncantation(string rawIncantation)
@@ -147,11 +246,6 @@ public class IncantationBuilder
             .Where(s => !string.IsNullOrEmpty(s))
             .Select(s => s.ToLower())
             .ToArray();
-    }
-
-    private void UpdateSpellLanguage()
-    {
-
     }
     #endregion
 }
