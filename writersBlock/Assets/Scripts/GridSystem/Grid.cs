@@ -11,8 +11,11 @@ public class Grid : MonoBehaviour {
     public GameObject gridChunk;
     List<GridMesh> gridChunks;
 
+    public Texture2D noiseSource;
+
     void Awake()
     {
+        TileMetrics.noiseSource = noiseSource;
         GameData.grid = this;
         grid = new Tile[sizeX * chunkSizeX, sizeY * chunkSizeY];
         createGridMesh();
@@ -26,7 +29,12 @@ public class Grid : MonoBehaviour {
             for (int y = 0; y < grid.GetLength(0); y++)
             {
                 bool b = System.Convert.ToBoolean(Random.Range(0, 6));
-                grid[x, y] = new Tile(new Vec2i(x, y), b);
+
+                if(x == 0 || y == 0 || x == grid.GetLength(1) - 1 || y == grid.GetLength(0) - 1)
+                    grid[x, y] = new Tile(new Vec2i(x, y), false);
+                else
+                    grid[x, y] = new Tile(new Vec2i(x, y), b);
+
             }
         }
 

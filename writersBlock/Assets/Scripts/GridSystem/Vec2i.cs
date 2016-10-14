@@ -31,10 +31,6 @@ public struct Vec2i
     {
         if (obj == null)
             return false;
-        if (ReferenceEquals(this, obj))
-            return true;
-        if (obj.GetType() != typeof(Vec2i))
-            return false;
         Vec2i other = (Vec2i)obj;
         return x == other.x && y == other.y;
     }

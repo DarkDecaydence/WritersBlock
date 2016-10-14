@@ -28,6 +28,7 @@ public class Character : MonoBehaviour {
 
         pos += dist;
         updatePosition();
+        Debug.Log(pos);
         return true;
     }
 

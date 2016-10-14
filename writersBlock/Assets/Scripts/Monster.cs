@@ -21,6 +21,7 @@ public class Monster : MonoBehaviour {
 
     //Attack speed
     float attackTime = 2f;
+    float attackValue = 10f;
 
     State state;
     enum State { idle, walk, attack}
@@ -87,8 +88,9 @@ public class Monster : MonoBehaviour {
 
     void attackBehavior()
     {
-        if (nextToTarget())
+        if (!nextToTarget())
         {
+            Debug.Log("IM no longer next to character");
             state = State.walk;
             updatePath(pos);
             return;
@@ -105,15 +107,17 @@ public class Monster : MonoBehaviour {
     void attack()
     {
         //DO NOTHING
-        Debug.Log("Attack is not implemented yet");
+        Debug.Log("Attacking");
+        GameData.playerCharacter.gameObject.GetComponent<HealthScript>().addHealth(-attackValue);
     }
 
     void updateNextPathPos()
     {
         pathIndex++;
+        pos = nextPos;
 
         //If monster has reached the end of its path
-        if(path.Count <= pathIndex)
+        if (path.Count - 1 <= pathIndex)
         {
             //If monster is next to its target switch to attack state
             if (nextToTarget())
@@ -128,14 +132,14 @@ public class Monster : MonoBehaviour {
             return;
         }
 
-        pos = nextPos;
+        
         nextPos = pos + path[pathIndex];
         timer2 = 0;
     }
 
     void delayPathUpdateCheck()
     {
-        if (timer > pathUpdateTimer)
+        if (timer > pathUpdateTimer && !nextToTarget())
         {
             updatePath(nextPos);
             timer = 0;
@@ -158,7 +162,8 @@ public class Monster : MonoBehaviour {
 
     bool nextToTarget()
     {
-        return Mathf.Abs(targetPos.x - pos.x) == 1 || Mathf.Abs(targetPos.y - pos.y) == 1;
+        //Debug.Log((Mathf.Abs(targetPos.x - pos.x) + Mathf.Abs(targetPos.y - pos.y)) == 1 || targetPos.Equals(pos));
+        return (Mathf.Abs(GameData.playerCharacter.pos.x - pos.x) + Mathf.Abs(GameData.playerCharacter.pos.y - pos.y)) == 1 || GameData.playerCharacter.pos.Equals(pos);
     }
 
     void setObjectPosition(Vec2i newPos)
