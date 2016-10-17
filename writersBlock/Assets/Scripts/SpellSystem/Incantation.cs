@@ -16,12 +16,16 @@ public class Incantation : MonoBehaviour
 
     public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
     {
-        var newGObj = Instantiate<GameObject>(spellPrefab);
-        var newIncantation = newGObj.GetComponent<Incantation>();
-        newGObj.transform.position = source.transform.position;
-        newIncantation.data = data;
-        newIncantation.Position = source.GetComponent<IGamePiece>().GetPosition();
-        newIncantation.Direction = direction;
+        if (spellPrefab != null) { 
+            var newGObj = Instantiate<GameObject>(spellPrefab);
+            var newIncantation = newGObj.GetComponent<Incantation>();
+            newGObj.transform.position = source.transform.position;
+            newIncantation.data = data;
+            newIncantation.Position = source.GetComponent<IGamePiece>().GetPosition();
+            newIncantation.Direction = direction;
+        } else {
+            Debug.LogError("Derp, no such spell. Try again later.");
+        }
     }
 
     private SpellData data;

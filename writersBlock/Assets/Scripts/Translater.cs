@@ -6,8 +6,6 @@ using System.Linq;
 
 public class Translater : MonoBehaviour
 {
-    public GameObject testSpell;
-    
     void Start()
     {
         SpellDatabase.LoadDataBase();
@@ -74,9 +72,12 @@ public class Translater : MonoBehaviour
 
         IncantationBuilder ib = new IncantationBuilder();
         ib.Expand(incantation);
+
         var isValid = ib.HasValidElement && ib.HasValidType && ib.IsValidLanguage && !ib.IsRambling;
         if (isValid) {
-            Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, testSpell, ib.ToIncantation(), new Vector2(direction.x, direction.y));
+            var data = ib.ToIncantation();
+            var spellCast = SpellDatabase.GetSpellGameObject(data.SpellType, data.SpellElement);
+            Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, spellCast, data, new Vector2(direction.x, direction.y));
         }
 
         return new Message(isValid, ib.ToString());
