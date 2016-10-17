@@ -111,14 +111,16 @@ public class IncantationBuilder
         }
     }
 
-    public Incantation ToIncantation()
+    public SpellData ToIncantation()
     {
         // Checks whether the incantation is correctly constructed.
         if (IsRambling || !HasValidElement || !HasValidType || !IsValidLanguage)
-            return Incantation.MisfireIncantation;
+            return Incantation.MisfireData;
 
-        SpellData incantationData = new SpellData(attemptedElements.FirstOrDefault(), attemptedTypes.FirstOrDefault(), PowerFromLanguage(attemptedLanguages.FirstOrDefault()));
-        return new Incantation(incantationData);
+        var element = attemptedElements.FirstOrDefault();
+        var type = attemptedTypes.FirstOrDefault();
+        var language = attemptedLanguages.FirstOrDefault();
+        return new SpellData(element, type, PowerFromElement(element) * (PowerFromLanguage(language)), SpeedFromElement(element));
     }
 
     public override string ToString()
@@ -127,10 +129,10 @@ public class IncantationBuilder
             return "Rambling Incantation";
 
         if (!IsValidLanguage)
-            return "Mispronounced Incantation";
+            return "Confused Incantation";
 
         if (!HasValidElement)
-            return "Multi-Elemental Incantation";
+            return "Non- or Multi-Elemental Incantation";
 
         if (!HasValidType)
             return "Mistyped Incantation";
@@ -234,6 +236,34 @@ public class IncantationBuilder
                 return 4;
             case IncantationLanguage.Draconic:
                 return 7;
+            default:
+                return 0;
+        }
+    }
+
+    private int PowerFromElement(SpellElement e)
+    {
+        switch (e) {
+            case SpellElement.Arcane:   return 1;
+            case SpellElement.Earth:    return 5;
+            case SpellElement.Water:    return 3;
+            case SpellElement.Fire:     return 4;
+            case SpellElement.Air:      return 3;
+            case SpellElement.Void:     return 6;
+            default:
+                return 0;
+        }
+    }
+
+    private int SpeedFromElement(SpellElement e)
+    {
+        switch (e) {
+            case SpellElement.Arcane:   return 6;
+            case SpellElement.Earth:    return 3;
+            case SpellElement.Water:    return 3;
+            case SpellElement.Fire:     return 4;
+            case SpellElement.Air:      return 5;
+            case SpellElement.Void:     return 1;
             default:
                 return 0;
         }

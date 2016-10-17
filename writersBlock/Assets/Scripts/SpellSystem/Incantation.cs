@@ -1,20 +1,51 @@
 ﻿using UnityEngine;
+using System.Collections;
 
-public class Incantation : ScriptableObject
+public class Incantation : MonoBehaviour
 {
-    public static Incantation MisfireIncantation
+    public static SpellData MisfireData
     {
-        get
-        {
-            var defaultSpellData = new SpellData(SpellElement.Invalid, SpellType.Invalid, 0);
-            return new Incantation(defaultSpellData);
-        }
+        get { return new SpellData(SpellElement.Invalid, SpellType.Invalid, 0, 0); }
+    }
+
+    public static void SpawnIncantation(GameObject source, GameObject spellPrefab, Vector2 direction)
+    {
+        var newGObj = Instantiate<GameObject>(spellPrefab);
+        var newIncantation = newGObj.GetComponent<Incantation>();
+        newIncantation.Position = new Vec2i(source.transform.position);
+        newIncantation.Direction = direction;
     }
 
     private SpellData data;
+    public Vec2i Position;
+    public Vector2 Direction;
 
-    public Incantation(SpellData data)
+    private bool isMoving = false;
+
+    void Update()
     {
-        this.data = data;
+        if (!isMoving) {
+            // Check if incantation has collided with anything.
+            if (!GameData.grid.getTile(Position).isWalkAble()) {
+                Destroy(gameObject);
+            }
+            // Start Coroutine to move to next tile.
+            StartCoroutine(CoMoveStep());
+        }
     }
+
+    private IEnumerator CoMoveStep()
+    {
+        // Acknowledge movement has started
+        isMoving = true;
+        var stepDistance = 0f;
+        while (stepDistance <= 1f) {
+            stepDistance += Time.deltaTime * data.Speed;
+            transform.Translate(Direction * stepDistance);
+            yield return null;
+        }
+        Position = Position + new Vec2i(Direction);
+        isMoving = false;
+    }
+
 }

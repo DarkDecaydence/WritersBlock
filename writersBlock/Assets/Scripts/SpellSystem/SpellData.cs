@@ -18,11 +18,13 @@ public struct SpellData
     public SpellElement SpellElement;
     public SpellType SpellType;
     public int Power;
+    public int Speed;
 
-    public SpellData(SpellElement element, SpellType type, int Power)
+    public SpellData(SpellElement element, SpellType type, int power, int speed)
     {
         this.SpellElement = element;
         this.SpellType = type;
-        this.Power = Power;
+        this.Power = power;
+        this.Speed = speed;
     }
 }

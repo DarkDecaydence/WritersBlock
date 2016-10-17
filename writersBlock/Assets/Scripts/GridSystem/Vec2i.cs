@@ -12,6 +12,18 @@ public struct Vec2i
         this.y = y;
     }
 
+    public Vec2i(Vector2 v)
+    {
+        this.x = Mathf.RoundToInt(v.x);
+        this.y = Mathf.RoundToInt(v.y);
+    }
+
+    public Vec2i(Vector3 v)
+    {
+        this.x = Mathf.RoundToInt(v.x);
+        this.y = Mathf.RoundToInt(v.z);
+    }
+
     public static Vec2i operator +(Vec2i left, Vec2i right)
     {
         return new Vec2i(left.x + right.x, left.y + right.y);

@@ -6,6 +6,7 @@ using System.Linq;
 
 public class Translater : MonoBehaviour
 {
+    public GameObject testSpell;
 
     public Message interpretMessage(string msg)
     {
@@ -57,12 +58,20 @@ public class Translater : MonoBehaviour
         else if (partMessages.Length < 3)
             return new Message(false, "Specify an incantation!");
 
-        string direction = partMessages[1]; // Translate this into a direction and spawn the spell
+        Vec2i direction;
+        try {
+            direction = translateDirection(partMessages[1]); 
+        } catch (InvalidDirectionException ex) {
+            return new Message(false, ex.Message);
+        }
+
         string incantation = string.Join(" ", partMessages.Skip(2).ToArray());
 
         IncantationBuilder ib = new IncantationBuilder();
         ib.Expand(incantation);
         var isValid = ib.HasValidElement && ib.HasValidType && ib.IsValidLanguage && !ib.IsRambling;
+        Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, testSpell, new Vector2(direction.x, direction.y));
+
         return new Message(isValid, ib.ToString());
     }
 
