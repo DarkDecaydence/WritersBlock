@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public interface IGamePiece
+{
+    Vec2i GetPosition();
+}
+
 public class Incantation : MonoBehaviour
 {
     public static SpellData MisfireData
@@ -14,7 +19,7 @@ public class Incantation : MonoBehaviour
         var newIncantation = newGObj.GetComponent<Incantation>();
         newGObj.transform.position = source.transform.position;
         newIncantation.data = data;
-        newIncantation.Position = new Vec2i(source.transform.position);
+        newIncantation.Position = source.GetComponent<IGamePiece>().GetPosition();
         newIncantation.Direction = direction;
     }
 
@@ -42,8 +47,9 @@ public class Incantation : MonoBehaviour
         isMoving = true;
         var stepDistance = 0f;
         while (stepDistance <= 1f) {
-            stepDistance += Time.deltaTime * (float)data.Speed;
-            transform.Translate(new Vector3(Direction.x, 0, Direction.y) * stepDistance);
+            var tickDistance = Time.deltaTime * (float)data.Speed;
+            stepDistance += tickDistance;
+            transform.Translate(new Vector3(Direction.x, 0, Direction.y) * tickDistance);
             yield return null;
         }
         Position = Position + new Vec2i(Direction);

@@ -70,7 +70,9 @@ public class Translater : MonoBehaviour
         IncantationBuilder ib = new IncantationBuilder();
         ib.Expand(incantation);
         var isValid = ib.HasValidElement && ib.HasValidType && ib.IsValidLanguage && !ib.IsRambling;
-        Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, testSpell, ib.ToIncantation(), new Vector2(direction.x, direction.y));
+        if (isValid) {
+            Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, testSpell, ib.ToIncantation(), new Vector2(direction.x, direction.y));
+        }
 
         return new Message(isValid, ib.ToString());
     }

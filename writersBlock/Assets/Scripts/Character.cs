@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class Character : MonoBehaviour {
-
+public class Character : MonoBehaviour, IGamePiece
+{
     public Vec2i pos;
 
     void Awake()
@@ -34,7 +35,11 @@ public class Character : MonoBehaviour {
 
     public void updatePosition()
     {
-        transform.position = new Vector3(pos.x + TileMetrics.tileHalfLength, transform.position.y ,pos.y + TileMetrics.tileHalfLength);
+        transform.position = new Vector3(pos.x + TileMetrics.tileHalfLength, transform.position.y, pos.y + TileMetrics.tileHalfLength);
     }
 
+    Vec2i IGamePiece.GetPosition()
+    {
+        return pos;
+    }
 }
