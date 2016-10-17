@@ -8,10 +8,12 @@ public class Incantation : MonoBehaviour
         get { return new SpellData(SpellElement.Invalid, SpellType.Invalid, 0, 0); }
     }
 
-    public static void SpawnIncantation(GameObject source, GameObject spellPrefab, Vector2 direction)
+    public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
     {
         var newGObj = Instantiate<GameObject>(spellPrefab);
         var newIncantation = newGObj.GetComponent<Incantation>();
+        newGObj.transform.position = source.transform.position;
+        newIncantation.data = data;
         newIncantation.Position = new Vec2i(source.transform.position);
         newIncantation.Direction = direction;
     }
@@ -40,8 +42,8 @@ public class Incantation : MonoBehaviour
         isMoving = true;
         var stepDistance = 0f;
         while (stepDistance <= 1f) {
-            stepDistance += Time.deltaTime * data.Speed;
-            transform.Translate(Direction * stepDistance);
+            stepDistance += Time.deltaTime * (float)data.Speed;
+            transform.Translate(new Vector3(Direction.x, 0, Direction.y) * stepDistance);
             yield return null;
         }
         Position = Position + new Vec2i(Direction);
