@@ -2,11 +2,6 @@
 using System.Collections;
 using System.Linq;
 
-public interface IGamePiece
-{
-    Vec2i GetPosition();
-}
-
 public class Incantation : MonoBehaviour
 {
     public static SpellData MisfireData

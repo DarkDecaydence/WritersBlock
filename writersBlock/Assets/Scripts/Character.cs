@@ -2,14 +2,13 @@
 using System.Collections;
 using System;
 
-public class Character : MonoBehaviour, IGamePiece
+public class Character : MonoBehaviour
 {
     public Vec2i pos;
 
     void Awake()
     {
         GameData.playerCharacter = this;
-        GameData.gamePieces.Add(this);
         setPostion(new Vec2i(1, 1));
     }
 
@@ -37,10 +36,5 @@ public class Character : MonoBehaviour, IGamePiece
     public void updatePosition()
     {
         transform.position = new Vector3(pos.x + TileMetrics.tileHalfLength, transform.position.y, pos.y + TileMetrics.tileHalfLength);
-    }
-
-    Vec2i IGamePiece.GetPosition()
-    {
-        return pos;
     }
 }

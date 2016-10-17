@@ -25,7 +25,6 @@ public static class SpellDatabase {
         SpellType type = EnumUtil.Parse<SpellType>(typeString);
         spellDatabase.Add(type, new Dictionary<SpellElement, GameObject>());
         GameObject[] ObjList = Resources.LoadAll<GameObject>("Spells/" + typeString);
-        Debug.Log("Spells/" + typeString + "/");
         for (int i = 0; i < ObjList.Length; i++)
         {
             spellDatabase[type].Add(EnumUtil.Parse<SpellElement>(ObjList[i].name), ObjList[i]);
