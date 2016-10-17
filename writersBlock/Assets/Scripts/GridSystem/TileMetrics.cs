@@ -9,13 +9,15 @@ public static class TileMetrics {
 
     public static float gridHeight = 0f;
 
-    public static float wallHeight = 0.5f;
+    public static float wallHeight = 1f;
 
     public static float wallBaseHeight = 0.2f;
 
     public static float wallWidth = 0.8f;
 
-    public static float innerWallTopWidth = wallWidth / 2f;
+    public static float innerWallRadius = wallWidth / 2f;
+
+    public static float innterWallHalfRadius = innerWallRadius / 2f;
 
     public static Texture2D noiseSource;
 

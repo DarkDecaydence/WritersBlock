@@ -64,6 +64,7 @@ public class TextBox : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
+
             Message message = translater.interpretMessage(inputArea.text);
 
             if(message.valid)

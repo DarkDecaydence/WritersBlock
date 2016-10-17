@@ -6,7 +6,7 @@ using System;
 public class AStarSearch : MonoBehaviour, IShortestPath<Vec2i, Vec2i>
 {
 
-    void Start()
+    void Awake()
     {
         GameData.aStar = this;
     }
