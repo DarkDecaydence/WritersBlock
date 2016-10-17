@@ -9,6 +9,7 @@ public class Character : MonoBehaviour, IGamePiece
     void Awake()
     {
         GameData.playerCharacter = this;
+        GameData.gamePieces.Add(this);
         setPostion(new Vec2i(1, 1));
     }
 

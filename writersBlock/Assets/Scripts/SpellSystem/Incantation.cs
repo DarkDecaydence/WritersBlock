@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public interface IGamePiece
 {
@@ -33,7 +34,8 @@ public class Incantation : MonoBehaviour
     {
         if (!isMoving) {
             // Check if incantation has collided with anything.
-            if (!GameData.grid.getTile(Position).isWalkAble()) {
+            var collidingPiece = GameData.gamePieces.FirstOrDefault(o => o.GetPosition().Equals(Position));
+            if (!GameData.grid.getTile(Position).isWalkAble() || (collidingPiece != null && collidingPiece != GameData.playerCharacter)) {
                 Destroy(gameObject);
             }
             // Start Coroutine to move to next tile.

@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public static class GameData {
 
     public static Character playerCharacter;
     public static Grid grid;
     public static TextBox textBox;
-    public static AStarSearch aStar; 
+    public static AStarSearch aStar;
+    public static List<IGamePiece> gamePieces = new List<IGamePiece>();
 
 }
