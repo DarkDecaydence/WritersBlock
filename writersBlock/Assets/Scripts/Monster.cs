@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-public class Monster : MonoBehaviour {
+public class Monster : MonoBehaviour, IGamePiece {
 
     Vec2i pos;
     Vec2i nextPos;
@@ -24,7 +25,7 @@ public class Monster : MonoBehaviour {
     float attackValue = 10f;
 
     State state;
-    enum State { idle, walk, attack}
+    enum State { idle, move, attack}
 
 	// Use this for initialization
 	void Start ()
@@ -33,6 +34,7 @@ public class Monster : MonoBehaviour {
         state = State.idle;
         pos = new Vec2i(5, 5);
         setObjectPosition(pos);
+        GameData.gamePieces.Add(this);
         updatePath(pos);
 
     }
@@ -52,7 +54,7 @@ public class Monster : MonoBehaviour {
             case State.idle:
                 idleBehavior();
                 break;
-            case State.walk:
+            case State.move:
                 moveBehavior();
                 break;
             case State.attack:
@@ -64,7 +66,11 @@ public class Monster : MonoBehaviour {
 
     void idleBehavior()
     {
-        state = State.walk;
+        delayPathUpdateCheck();
+        if (path != null)
+        {
+            state = State.move;      
+        }     
     }
 
     void moveBehavior()
@@ -73,7 +79,6 @@ public class Monster : MonoBehaviour {
         if (path == null)
             return;
 
-        timer += Time.deltaTime;
         timer2 += Time.deltaTime;
         float t = timer2 / movementTime;
         setObjectPosition(Vec2i.Lerp(pos, nextPos, t, transform.position.y));
@@ -91,7 +96,7 @@ public class Monster : MonoBehaviour {
         if (!nextToTarget())
         {
             Debug.Log("IM no longer next to character");
-            state = State.walk;
+            state = State.move;
             updatePath(pos);
             return;
         }
@@ -139,6 +144,7 @@ public class Monster : MonoBehaviour {
 
     void delayPathUpdateCheck()
     {
+        timer += Time.deltaTime;
         if (timer > pathUpdateTimer && !nextToTarget())
         {
             updatePath(nextPos);
@@ -174,5 +180,10 @@ public class Monster : MonoBehaviour {
     void setObjectPosition(Vector3 newPos)
     {
         transform.position = new Vector3(newPos.x + TileMetrics.tileHalfLength, transform.position.y, newPos.z + TileMetrics.tileHalfLength);
+    }
+
+    public Vec2i GetPosition()
+    {
+        return pos;
     }
 }
