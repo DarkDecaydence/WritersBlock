@@ -1,24 +1,66 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
+using System;
+using System.Linq;
 
-public class SpellDatabase : MonoBehaviour {
+public static class SpellDatabase {
 
-    Dictionary<SpellType, Dictionary<SpellElement, GameObject>> spellDatabase;
+    public static Dictionary<SpellType, Dictionary<SpellElement, GameObject>> spellDatabase;
 
-	void Awake()
+	public static void LoadDataBase()
     {
+        spellDatabase = new Dictionary<SpellType, Dictionary<SpellElement, GameObject>>();
+        List<string> enumValues = EnumUtil.GetValues<SpellType>();
+        for (int i = 0; i < enumValues.Count; i++)
+        {
+            if (EnumUtil.Parse<SpellType>(enumValues[i]) == SpellType.Invalid)
+                continue;
 
-        
-
+            InsertSpellsIntoDatabase(enumValues[i]);
+        }    
     }
 	
-	public void insertSpellsIntoDatabase(string type)
+	public static void InsertSpellsIntoDatabase(string typeString)
     {
-        GameObject[] list = Resources.LoadAll<GameObject>("Spells/Ball/");
-        for (int i = 0; i < list.Length; i++)
+        SpellType type = EnumUtil.Parse<SpellType>(typeString);
+        spellDatabase.Add(type, new Dictionary<SpellElement, GameObject>());
+        GameObject[] ObjList = Resources.LoadAll<GameObject>("Spells/" + typeString);
+        Debug.Log("Spells/" + typeString + "/");
+        for (int i = 0; i < ObjList.Length; i++)
         {
-
+            spellDatabase[type].Add(EnumUtil.Parse<SpellElement>(ObjList[i].name), ObjList[i]);
         }
+
+        if(ObjList.Length == 0)
+            Debug.LogError("The spell type of \"" + typeString + "\" Does not appear to exist, please update folder structure");
+
+    }
+
+    /// <summary>
+    /// Returns the GameObjet of the given type and element if one exist if not it returns null
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    public static GameObject GetSpellGameObject(SpellType type, SpellElement element)
+    {
+        if (spellDatabase.ContainsKey(type) && spellDatabase[type].ContainsKey(element))
+            return spellDatabase[type][element];
+        else
+            return null;
+    }
+}
+
+public static class EnumUtil
+{
+    public static List<string> GetValues<T>()
+    {
+        return Enum.GetValues(typeof(T)).Cast<T>().Select(v => v.ToString()).ToList();
+    }
+
+
+    public static T Parse<T>(string s)
+    {
+        return (T)Enum.Parse(typeof(T), s);
     }
 }

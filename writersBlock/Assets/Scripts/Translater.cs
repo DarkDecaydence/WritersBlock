@@ -7,6 +7,11 @@ using System.Linq;
 public class Translater : MonoBehaviour
 {
     public GameObject testSpell;
+    
+    void Start()
+    {
+        SpellDatabase.LoadDataBase();
+    }
 
     public Message interpretMessage(string msg)
     {
