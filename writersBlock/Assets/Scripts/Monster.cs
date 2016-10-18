@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class Monster : MonoBehaviour, IGamePiece {
+public class Monster : MonoBehaviour {
 
     Vec2i pos;
     Vec2i nextPos;
@@ -34,7 +34,6 @@ public class Monster : MonoBehaviour, IGamePiece {
         state = State.idle;
         pos = new Vec2i(5, 5);
         setObjectPosition(pos);
-        GameData.gamePieces.Add(this);
         updatePath(pos);
 
     }
