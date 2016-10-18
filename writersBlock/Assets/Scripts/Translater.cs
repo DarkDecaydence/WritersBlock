@@ -63,12 +63,13 @@ public class Translater : MonoBehaviour
 
         Vec2i direction;
         try {
-            direction = translateDirection(partMessages[1]); 
+            direction = translateDirection(partMessages.Last()); 
         } catch (InvalidDirectionException ex) {
             return new Message(false, ex.Message);
         }
 
-        string incantation = string.Join(" ", partMessages.Skip(2).ToArray());
+        var restIncantation = partMessages.Skip(1);
+        string incantation = string.Join(" ", restIncantation.Take(restIncantation.Count() - 1).ToArray());
 
         IncantationBuilder ib = new IncantationBuilder();
         ib.Expand(incantation);
