@@ -15,6 +15,7 @@ public class Incantation : MonoBehaviour
             var newGObj = Instantiate<GameObject>(spellPrefab);
             var newIncantation = newGObj.GetComponent<Incantation>();
             newGObj.transform.position = source.transform.position;
+            newGObj.transform.localScale = new Vector3(data.Size, data.Size, data.Size);
             newIncantation.data = data;
             newIncantation.Position = source.GetComponent<Character>().pos;
             newIncantation.Direction = direction;
@@ -69,7 +70,6 @@ public class Incantation : MonoBehaviour
             //stepDistance += tickDistance;
             
             transform.position = Vector3.Lerp(pos, newPos, t);
-            Debug.Log(Time.deltaTime + " / " + data.Speed);
             t += (Time.deltaTime * data.Speed);
             //transform.Translate(new Vector3(Direction.x, 0, Direction.y) * tickDistance);
             yield return null;
