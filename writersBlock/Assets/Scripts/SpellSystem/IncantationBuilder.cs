@@ -120,7 +120,7 @@ public class IncantationBuilder
         var element = attemptedElements.FirstOrDefault();
         var type = attemptedTypes.FirstOrDefault();
         var language = attemptedLanguages.FirstOrDefault();
-        return new SpellData(element, type, PowerFromElement(element) * (PowerFromLanguage(language)), SpeedFromElement(element));
+        return new SpellData(element, type, PowerFromElement(element) * (PowerFromLanguage(language)), SpeedFromElement(element), SizeFromLanguage(language));
     }
 
     public override string ToString()
@@ -236,6 +236,20 @@ public class IncantationBuilder
                 return 4;
             case IncantationLanguage.Draconic:
                 return 7;
+            default:
+                return 0;
+        }
+    }
+
+    private float SizeFromLanguage(IncantationLanguage l)
+    {
+        switch (l) {
+            case IncantationLanguage.English:
+                return 0.25f;
+            case IncantationLanguage.Latin:
+                return 0.5f;
+            case IncantationLanguage.Draconic:
+                return 1f;
             default:
                 return 0;
         }
