@@ -93,7 +93,6 @@ public class Incantation : MonoBehaviour
         {
             t += tSplit;
             l.intensity = 1 - t;
-            Debug.Log(" " + t + " " + (10 - t) / 10);
             yield return new WaitForSeconds(tSplit);
         }
         
