@@ -160,6 +160,9 @@ public class Monster : MonoBehaviour {
         targetPos = GameData.playerCharacter.pos;
         path = GameData.aStar.FindShortestPath(pos, targetPos);
 
+        if (path == null)
+            return;
+
         nextPos = pos + path[0];
         pathIndex = 0;
         timer2 = 0;

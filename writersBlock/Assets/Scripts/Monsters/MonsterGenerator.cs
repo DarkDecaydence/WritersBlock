@@ -3,13 +3,7 @@ using System.Collections;
 
 public class MonsterGenerator : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public GameObject monsterPrefab;
+
+
 }
