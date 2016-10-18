@@ -24,19 +24,29 @@ public class Incantation : MonoBehaviour
     }
 
     private SpellData data;
-    public Vec2i Position;
-    public Vector2 Direction;
+    private Vec2i Position;
+    private Vector2 Direction;
 
     private bool isMoving = false;
     private bool isDestroyed = false;
     private bool isTriggered = false;
 
+    public bool rotate = false;
+
     void FixedUpdate()
     {
-        if (!isMoving && !isDestroyed) {
+        Rotate();
+        
+    }
+
+    void LateUpdate()
+    {
+        if (!isMoving && !isDestroyed)
+        {
             // Check if incantation has collided with anything.
             //var collidingPiece = GameData.gamePieces.FirstOrDefault(o => o.GetPosition().Equals(Position));
-            if (!GameData.grid.getTile(Position).isWalkAble()) {
+            if (!GameData.grid.getTile(Position).isWalkAble())
+            {
                 StartCoroutine(destroyAfter(0.75f));
                 return;
             }
@@ -49,11 +59,19 @@ public class Incantation : MonoBehaviour
     {
         // Acknowledge movement has started
         isMoving = true;
-        var stepDistance = 0f;
-        while (stepDistance <= 1f) {
-            var tickDistance = Time.deltaTime * (float)data.Speed;
-            stepDistance += tickDistance;
-            transform.Translate(new Vector3(Direction.x, 0, Direction.y) * tickDistance);
+        //var stepDistance = 0f;
+
+        float t = 0;
+        Vector3 pos = transform.position;
+        Vector3 newPos = pos + new Vector3(Direction.x, 0, Direction.y);
+        while (t < 1) {
+            //var tickDistance = Time.deltaTime * (float)data.Speed;
+            //stepDistance += tickDistance;
+            
+            transform.position = Vector3.Lerp(pos, newPos, t);
+            Debug.Log(Time.deltaTime + " / " + data.Speed);
+            t += (Time.deltaTime * data.Speed);
+            //transform.Translate(new Vector3(Direction.x, 0, Direction.y) * tickDistance);
             yield return null;
         }
         Position = Position + new Vec2i(Direction);
@@ -87,14 +105,22 @@ public class Incantation : MonoBehaviour
     private IEnumerator destroyAfter(float t)
     {
         isDestroyed = true;
-        gameObject.GetComponent<ParticleSystem>().Stop();
-        Light l = transform.FindChild("Point light").GetComponent<Light>();
+        if(gameObject.GetComponent<ParticleSystem>() != null)
+            gameObject.GetComponent<ParticleSystem>().Stop();
+        Transform child = transform.FindChild("Point light");
+        Light l;
+        if (child != null)
+            l = child.GetComponent<Light>();
+        else
+            l = null;
+
         float tSplit = t / 10f;
         t = tSplit;
         for(int i = 0; i < 10; i++)
         {
             t += tSplit;
-            l.intensity = 1 - t;
+            if(l != null)
+                l.intensity = 1 - t;
             yield return new WaitForSeconds(tSplit);
         }
         
@@ -133,6 +159,16 @@ public class Incantation : MonoBehaviour
         }
 
         return 1f; // If none of the above, calculate damage normally.
+    }
+
+    void Rotate()
+    {
+        if (rotate)
+        {
+            Debug.Log(Direction);
+            transform.Rotate(new Vector3(Direction.y, 0, Direction.x));
+
+        }
     }
 
 }

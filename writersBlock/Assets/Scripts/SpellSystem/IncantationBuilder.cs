@@ -120,7 +120,7 @@ public class IncantationBuilder
         var element = attemptedElements.FirstOrDefault();
         var type = attemptedTypes.FirstOrDefault();
         var language = attemptedLanguages.FirstOrDefault();
-        return new SpellData(element, type, PowerFromElement(element) * (PowerFromLanguage(language)), SpeedFromElement(element));
+        return new SpellData(element, type, PowerFromElement(element) * PowerFromLanguage(language), SpeedFromElement(element));
     }
 
     public override string ToString()
