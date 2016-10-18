@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 
 public class Incantation : MonoBehaviour
 {
@@ -18,9 +19,21 @@ public class Incantation : MonoBehaviour
             newIncantation.data = data;
             newIncantation.Position = source.GetComponent<Character>().pos;
             newIncantation.Direction = direction;
+
+            if (data.SpellElement != SpellElement.Invalid) {
+                GameData.audioManager.OneShotSound(SpellElementName(data.SpellElement) + "Spell");
+            } else {
+                GameData.audioManager.OneShotSound("Fizzle");
+            }
         } else {
             Debug.LogError("Derp, no such spell. Try again later.");
         }
+    }
+
+    public static string SpellElementName(SpellElement e)
+    {
+        var enumVals = EnumUtil.GetValues<SpellElement>();
+        return enumVals.FirstOrDefault(s => EnumUtil.Parse<SpellElement>(s) == e);
     }
 
     private SpellData data;
