@@ -28,12 +28,12 @@ public class Incantation : MonoBehaviour
     public Vector2 Direction;
 
     private bool isMoving = false;
-    private bool destroyed = false;
+    private bool isDestroyed = false;
     private bool isTriggered = false;
 
     void FixedUpdate()
     {
-        if (!isMoving && !destroyed) {
+        if (!isMoving && !isDestroyed) {
             // Check if incantation has collided with anything.
             //var collidingPiece = GameData.gamePieces.FirstOrDefault(o => o.GetPosition().Equals(Position));
             if (!GameData.grid.getTile(Position).isWalkAble()) {
@@ -76,15 +76,17 @@ public class Incantation : MonoBehaviour
     void doDamage(GameObject target)
     {
         HealthScript health = target.GetComponent<HealthScript>();
+        var mElem = target.GetComponent<Monster>().Element;
         if (health != null)
         {
-            health.addHealth(-data.Power);
+            var multiplier = CalculateMultiplier(data.SpellElement, mElem);
+            health.addHealth(-data.Power * multiplier);
         }
     }
 
     private IEnumerator destroyAfter(float t)
     {
-        destroyed = true;
+        isDestroyed = true;
         gameObject.GetComponent<ParticleSystem>().Stop();
         Light l = transform.FindChild("Point light").GetComponent<Light>();
         float tSplit = t / 10f;
@@ -98,6 +100,39 @@ public class Incantation : MonoBehaviour
         
         Destroy(gameObject);
 
+    }
+
+    private float CalculateMultiplier(SpellElement sElem, MonsterElement mElem)
+    {
+        // If monster has no element, default multiplier should return.
+
+        // Calculating monster weaknesses.
+        if (mElem == MonsterElement.Fire) {
+            switch (sElem) {
+                case SpellElement.Water:
+                    return 2.75f; // Water is super effective against Fire.
+                case SpellElement.Earth:
+                case SpellElement.Air:
+                    return 1.5f; // Earth and Air is effective against Fire.
+            }
+        } else if ((mElem == MonsterElement.Air && sElem == SpellElement.Arcane) || (mElem == MonsterElement.Earth && sElem == SpellElement.Void)) {
+            return 2f; // Arcane is effective against Air, and Void is effective against Earth.
+        }
+
+        // Calculating monster strengths.
+        if (sElem == SpellElement.Fire) {
+            switch (mElem) {
+                case MonsterElement.Water:
+                    return 0.36f; // Fire is super ineffective against Water.
+                case MonsterElement.Earth:
+                case MonsterElement.Air:
+                    return 0.75f; // Fire is ineffective against Earth and Air.
+            }
+        } else if ((sElem == SpellElement.Air && mElem == MonsterElement.Arcane) || (sElem == SpellElement.Earth && mElem == MonsterElement.Void)) {
+            return 0.5f; // Air is ineffective against Arcane, and Earth is Ineffective against Void.
+        }
+
+        return 1f; // If none of the above, calculate damage normally.
     }
 
 }
