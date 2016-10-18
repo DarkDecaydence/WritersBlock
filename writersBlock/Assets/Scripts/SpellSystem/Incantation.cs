@@ -58,16 +58,7 @@ public class Incantation : MonoBehaviour
         }
         Position = Position + new Vec2i(Direction);
         isMoving = false;
-    }
-
-    private IEnumerator destroyAfter(float t)
-    {
-        destroyed = true;
-        gameObject.GetComponent<ParticleSystem>().Stop();
-        yield return new WaitForSeconds(t);
-        Destroy(gameObject);
-
-    }
+    }  
 
     void OnTriggerEnter(Collider coll)
     {   
@@ -89,6 +80,25 @@ public class Incantation : MonoBehaviour
         {
             health.addHealth(-data.Power);
         }
+    }
+
+    private IEnumerator destroyAfter(float t)
+    {
+        destroyed = true;
+        gameObject.GetComponent<ParticleSystem>().Stop();
+        Light l = transform.FindChild("Point light").GetComponent<Light>();
+        float tSplit = t / 10f;
+        t = tSplit;
+        for(int i = 0; i < 10; i++)
+        {
+            t += tSplit;
+            l.intensity = 1 - t;
+            Debug.Log(" " + t + " " + (10 - t) / 10);
+            yield return new WaitForSeconds(tSplit);
+        }
+        
+        Destroy(gameObject);
+
     }
 
 }
