@@ -7,5 +7,6 @@ public static class GameData {
     public static Grid grid;
     public static TextBox textBox;
     public static AStarSearch aStar;
+    public static AudioManager audioManager;
 
 }
