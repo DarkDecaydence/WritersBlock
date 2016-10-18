@@ -111,7 +111,7 @@ public class Monster : MonoBehaviour {
     void attack()
     {
         //DO NOTHING
-        Debug.Log("Attacking");
+        //Debug.Log("Attacking");
         GameData.playerCharacter.gameObject.GetComponent<HealthScript>().addHealth(-attackValue);
     }
 

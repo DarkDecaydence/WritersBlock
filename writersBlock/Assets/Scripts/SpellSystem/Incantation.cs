@@ -16,7 +16,7 @@ public class Incantation : MonoBehaviour
             var newIncantation = newGObj.GetComponent<Incantation>();
             newGObj.transform.position = source.transform.position;
             newIncantation.data = data;
-            newIncantation.Position = source.GetComponent<IGamePiece>().GetPosition();
+            newIncantation.Position = source.GetComponent<Character>().pos;
             newIncantation.Direction = direction;
         } else {
             Debug.LogError("Derp, no such spell. Try again later.");
@@ -28,14 +28,17 @@ public class Incantation : MonoBehaviour
     public Vector2 Direction;
 
     private bool isMoving = false;
+    private bool destroyed = false;
+    private bool isTriggered = false;
 
-    void Update()
+    void FixedUpdate()
     {
-        if (!isMoving) {
+        if (!isMoving && !destroyed) {
             // Check if incantation has collided with anything.
-            var collidingPiece = GameData.gamePieces.FirstOrDefault(o => o.GetPosition().Equals(Position));
-            if (!GameData.grid.getTile(Position).isWalkAble() || (collidingPiece != null && collidingPiece != GameData.playerCharacter)) {
-                Destroy(gameObject);
+            //var collidingPiece = GameData.gamePieces.FirstOrDefault(o => o.GetPosition().Equals(Position));
+            if (!GameData.grid.getTile(Position).isWalkAble()) {
+                StartCoroutine(destroyAfter(0.75f));
+                return;
             }
             // Start Coroutine to move to next tile.
             StartCoroutine(CoMoveStep());
@@ -55,6 +58,37 @@ public class Incantation : MonoBehaviour
         }
         Position = Position + new Vec2i(Direction);
         isMoving = false;
+    }
+
+    private IEnumerator destroyAfter(float t)
+    {
+        destroyed = true;
+        gameObject.GetComponent<ParticleSystem>().Stop();
+        yield return new WaitForSeconds(t);
+        Destroy(gameObject);
+
+    }
+
+    void OnTriggerEnter(Collider coll)
+    {   
+        if (coll.CompareTag("Player") || isTriggered)
+            return;
+
+        isTriggered = true;
+
+        doDamage(coll.gameObject);
+
+        StartCoroutine(destroyAfter( 0.75f ));
+
+    }
+
+    void doDamage(GameObject target)
+    {
+        HealthScript health = target.GetComponent<HealthScript>();
+        if (health != null)
+        {
+            health.addHealth(-data.Power);
+        }
     }
 
 }
