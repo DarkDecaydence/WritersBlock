@@ -6,7 +6,7 @@ public class Incantation : MonoBehaviour
 {
     public static SpellData MisfireData
     {
-        get { return new SpellData(SpellElement.Invalid, SpellType.Invalid, 0, 0); }
+        get { return new SpellData(SpellElement.Invalid, SpellType.Invalid, 0, 0, 0); }
     }
 
     public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
