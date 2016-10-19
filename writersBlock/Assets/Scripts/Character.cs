@@ -27,6 +27,7 @@ public class Character : MonoBehaviour
         Debug.Log(next.isWalkAble() + " "+  next.ToString());
         if (next.isTileExit())
         {
+            GameData.audioManager.PlayVictory();
             winLevel();
             return true;
         }
@@ -36,7 +37,7 @@ public class Character : MonoBehaviour
         pos += dist;
         // Lerp player position while playing audio.
         // Player movement audio is 0.5s length.
-        GameData.audioManager.PlayPlayer("PlayerWalk");
+        GameData.audioManager.PlayPlayer("PlayerWalkCycle");
         updatePosition();
         Debug.Log(pos);
         return true;

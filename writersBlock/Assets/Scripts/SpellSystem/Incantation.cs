@@ -5,9 +5,15 @@ using System.Reflection;
 
 public class Incantation : MonoBehaviour
 {
+    #region Static methods.
     public static SpellData MisfireData
     {
         get { return new SpellData(SpellElement.Invalid, SpellType.Invalid, 0, 0, 0); }
+    }
+
+    public static string SpellElementName(SpellElement e)
+    {
+        return EnumUtil.GetValues<SpellElement>().FirstOrDefault(s => EnumUtil.Parse<SpellElement>(s) == e);
     }
 
     public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
@@ -22,20 +28,15 @@ public class Incantation : MonoBehaviour
             newIncantation.Direction = direction;
 
             if (data.SpellElement != SpellElement.Invalid) {
-                GameData.audioManager.OneShotSound(SpellElementName(data.SpellElement) + "Spell");
+                GameData.audioManager.PlaySpell(SpellElementName(data.SpellElement) + "Spell");
             } else {
-                GameData.audioManager.OneShotSound("Fizzle");
+                GameData.audioManager.PlaySpell("Fizzle");
             }
         } else {
             Debug.LogError("Derp, no such spell. Try again later.");
         }
     }
-
-    public static string SpellElementName(SpellElement e)
-    {
-        var enumVals = EnumUtil.GetValues<SpellElement>();
-        return enumVals.FirstOrDefault(s => EnumUtil.Parse<SpellElement>(s) == e);
-    }
+    #endregion
 
     private SpellData data;
     private Vec2i Position;

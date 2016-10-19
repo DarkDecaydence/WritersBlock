@@ -91,6 +91,8 @@ public class Monster : MonoBehaviour {
 
         if (t >= 1)
         {
+            // Change location of audio play to counter repetition and desync.
+            GameData.audioManager.PlayMonster("MonsterWalkCycle");
             updateNextPathPos();
             delayPathUpdateCheck();
             timer2 = 0;
@@ -178,6 +180,7 @@ public class Monster : MonoBehaviour {
     public void aggro()
     {
         Debug.Log("I just got aggored warrrrhh");
+        GameData.audioManager.PlayMonster("MonsterLaugh");
         state = State.move;
         updatePath(pos);
     }
