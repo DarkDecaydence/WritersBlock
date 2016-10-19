@@ -5,9 +5,8 @@ using System;
 
 public enum MonsterElement {  None, Arcane, Earth, Water, Fire, Air, Void }
 
-public class Monster : MonoBehaviour {
+public class Monster : GamePiece {
 
-    Vec2i pos;
     Vec2i nextPos;
     Vec2i targetPos;
 
@@ -161,10 +160,10 @@ public class Monster : MonoBehaviour {
     void updatePath(Vec2i from)
     {
 
-        if (targetPos.Equals(GameData.playerCharacter.pos))
+        if (targetPos.Equals(GameData.playerCharacter.Pos))
             return;
 
-        targetPos = GameData.playerCharacter.pos;
+        targetPos = GameData.playerCharacter.Pos;
         path = GameData.aStar.FindShortestPath(pos, targetPos);
 
         if (path == null)
@@ -185,7 +184,7 @@ public class Monster : MonoBehaviour {
     bool nextToTarget()
     {
         //Debug.Log((Mathf.Abs(targetPos.x - pos.x) + Mathf.Abs(targetPos.y - pos.y)) == 1 || targetPos.Equals(pos));
-        return (Mathf.Abs(GameData.playerCharacter.pos.x - pos.x) + Mathf.Abs(GameData.playerCharacter.pos.y - pos.y)) == 1 || GameData.playerCharacter.pos.Equals(pos);
+        return (Mathf.Abs(GameData.playerCharacter.Pos.x - pos.x) + Mathf.Abs(GameData.playerCharacter.Pos.y - pos.y)) == 1 || GameData.playerCharacter.Pos.Equals(pos);
     }
 
     void setObjectPosition(Vec2i newPos)
