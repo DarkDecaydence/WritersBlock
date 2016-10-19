@@ -79,6 +79,17 @@ public class Translater : MonoBehaviour
             var data = ib.ToIncantation();
             var spellCast = SpellDatabase.GetSpellGameObject(data.SpellType, data.SpellElement);
             Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, spellCast, data, new Vector2(direction.x, direction.y));
+            //switch (data.SpellType) {
+            //    case SpellType.Ball:
+            //        Incantation.SpawnIncantation(GameData.playerCharacter.gameObject, spellCast, data, new Vector2(direction.x, direction.y));
+            //        break;
+            //    case SpellType.Blast:
+            //        BurstSpell.SpawnIncantation(GameData.playerCharacter.gameObject, spellCast, data, new Vector2(direction.x, direction.y));
+            //        break;
+            //    default:
+            //        Debug.Log("*fart*");
+            //        break;
+            //}
         }
 
         return new Message(isValid, ib.ToString());

@@ -160,7 +160,7 @@ public class IncantationBuilder
         switch (attemptedTypes.First()) {
             case SpellType.Ball:    type = "ball"; break;
             case SpellType.Blast:   type = "blast"; break;
-            case SpellType.Wall:    type = "wall"; break;
+            //case SpellType.Wall:    type = "wall"; break;
             case SpellType.Shield:  type = "shield"; break;
             default: throw new Exception("Enum had unidentified type or 'Invalid' when impossible; Correct switch cases.");
         }
@@ -213,10 +213,10 @@ public class IncantationBuilder
             case "flatus":
             case "drevab":
                 return SpellType.Blast;
-            case "wall":
-            case "murus":
-            case "dos":
-                return SpellType.Wall;
+            //case "wall":
+            //case "murus":
+            //case "dos":
+            //    return SpellType.Wall;
             case "shield":
             case "arma":
             case "fethos":
