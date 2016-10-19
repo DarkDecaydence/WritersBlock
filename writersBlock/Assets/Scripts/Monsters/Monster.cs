@@ -7,7 +7,8 @@ public enum MonsterElement {  None, Arcane, Earth, Water, Fire, Air, Void }
 
 public class Monster : GamePiece {
 
-    Vec2i nextPos;
+    Vec2i prevPos;
+    Vec2i actualPos;
     Vec2i targetPos;
 
     List<Vec2i> path;
@@ -16,7 +17,7 @@ public class Monster : GamePiece {
     //Timer for updating the path finding
     float pathUpdateTimer = 3f;
     float timer = 0f;
-    float timer2 = 0f;
+    float walkTimer = 0f;
 
     //Movement speed and timer
     float movementTime = 1.5f;
@@ -35,7 +36,7 @@ public class Monster : GamePiece {
 	// Use this for initialization
 	public void Init (Vec2i pos)
     {
-        this.pos = pos;
+        updateDataPosition(pos);
         setObjectPosition(pos);
 
         state = State.Patroling;
@@ -75,7 +76,7 @@ public class Monster : GamePiece {
         if (path != null)
         {
             state = State.move;      
-        }     
+        }
     }
 
     void moveBehavior()
@@ -84,78 +85,18 @@ public class Monster : GamePiece {
         if (path == null)
             return;
 
-        timer2 += Time.deltaTime;
-        float t = timer2 / movementTime;
-        setObjectPosition(Vec2i.Lerp(pos, nextPos, t, transform.position.y));
+        walkTimer += Time.deltaTime;
+        float t = walkTimer / movementTime;
+        setObjectPosition(Vec2i.Lerp(prevPos, pos, t, transform.position.y));
 
         if (t >= 1)
         {
             // Change location of audio play to counter repetition and desync.
             GameData.audioManager.PlayMonster("MonsterWalkCycle");
-            updateNextPathPos();
+            actualPos = pos;
+            GetNextPosInPath();
             delayPathUpdateCheck();
-            timer2 = 0;
-        }
-    }
-
-    void attackBehavior()
-    {
-        if (!nextToTarget())
-        {
-            Debug.Log("IM no longer next to character");
-            state = State.move;
-            updatePath(pos);
-            return;
-        }
-
-        timer2 += Time.deltaTime;
-        if(timer2 > attackTime)
-        {
-            attack();
-            timer2 = 0;
-        }
-    }
-
-    void attack()
-    {
-        //DO NOTHING
-        //Debug.Log("Attacking");
-        GameData.playerCharacter.gameObject.GetComponent<HealthScript>().addHealth(-attackValue);
-    }
-
-    void updateNextPathPos()
-    {
-        pathIndex++;
-        pos = nextPos;
-
-        //If monster has reached the end of its path
-        if (path.Count - 1 <= pathIndex)
-        {
-            //If monster is next to its target switch to attack state
-            if (nextToTarget())
-            {
-                state = State.attack;
-            }
-            //Else update the path to reach the player
-            else
-            {
-                updatePath(nextPos);
-            }
-            return;
-        }
-
-        
-        nextPos = pos + path[pathIndex];
-        timer2 = 0;
-    }
-
-    void delayPathUpdateCheck()
-    {
-        timer += Time.deltaTime;
-        if (timer > pathUpdateTimer && !nextToTarget())
-        {
-            updatePath(nextPos);
-            timer = 0;
+            walkTimer = 0;
         }
     }
 
@@ -171,9 +112,69 @@ public class Monster : GamePiece {
         if (path == null)
             return;
 
-        nextPos = pos + path[0];
         pathIndex = 0;
-        timer2 = 0;
+        GetNextPosInPath();
+    }
+
+    void GetNextPosInPath()
+    {
+
+        prevPos = pos;
+        Vec2i nextPosTemp = pos + path[pathIndex];
+
+        if (checkForPathEnd())
+            return;
+
+        if (checkIfTileIsOccupied(nextPosTemp))
+            return;
+
+        updateDataPosition(nextPosTemp);
+        walkTimer = 0;
+        pathIndex++;
+    }
+
+    bool checkIfTileIsOccupied(Vec2i v)
+    {
+        if (GameData.grid.getTile(v).isTileOccupied())
+        {
+            state = State.idle;
+            path = null;
+            return true;
+        }
+        return false;
+    }
+    
+    bool checkForPathEnd()
+    {
+        //If monster has reached the end of its path
+        if (path.Count - 1 <= pathIndex)
+        {
+            //If monster is next to its target switch to attack state
+            Debug.Log("NExt to trget? : " + nextToTarget());
+            if (nextToTarget())
+            {
+                Debug.Log("ok");
+                state = State.attack;
+                path = null;
+            }
+            //Else update the path to reach the player
+            else
+            {
+                updatePath(pos);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    void delayPathUpdateCheck()
+    {
+        timer += Time.deltaTime;
+        if (timer > pathUpdateTimer && !nextToTarget())
+        {
+            updatePath(pos);
+            timer = 0;
+        }
     }
 
     public void aggro()
@@ -184,10 +185,33 @@ public class Monster : GamePiece {
         updatePath(pos);
     }
 
+    void attackBehavior()
+    {
+        if (!nextToTarget())
+        {
+            Debug.Log("IM no longer next to character");
+            state = State.move;
+            updatePath(pos);
+            return;
+        }
+
+        walkTimer += Time.deltaTime;
+        if (walkTimer > attackTime)
+        {
+            attack();
+            walkTimer = 0;
+        }
+    }
+
+    void attack()
+    {
+        GameData.playerCharacter.gameObject.GetComponent<HealthScript>().addHealth(-attackValue);
+    }
+
     bool nextToTarget()
     {
-        //Debug.Log((Mathf.Abs(targetPos.x - pos.x) + Mathf.Abs(targetPos.y - pos.y)) == 1 || targetPos.Equals(pos));
-        return (Mathf.Abs(GameData.playerCharacter.Pos.x - pos.x) + Mathf.Abs(GameData.playerCharacter.Pos.y - pos.y)) == 1 || GameData.playerCharacter.Pos.Equals(pos);
+        return (Mathf.Abs(GameData.playerCharacter.Pos.x - actualPos.x) + Mathf.Abs(GameData.playerCharacter.Pos.y - actualPos.y)) == 1 
+            || GameData.playerCharacter.Pos.Equals(actualPos);
     }
 
     void setObjectPosition(Vec2i newPos)

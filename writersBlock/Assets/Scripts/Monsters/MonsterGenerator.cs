@@ -30,7 +30,7 @@ public class MonsterGenerator : MonoBehaviour {
             int x = Random.Range(0, GameData.grid.GetTotalSizeX);
             int y = Random.Range(0, GameData.grid.GetTotalSizeY);
             Tile t = GameData.grid.getTile(new Vec2i(x, y));
-            if ( t != null && t.isWalkAble())
+            if ( t != null && t.isWalkAble() && !t.isTileOccupied())
             {
                 spawnMonster(0, new Vec2i(x, y));
                 spawned++;
@@ -52,7 +52,6 @@ public class MonsterGenerator : MonoBehaviour {
 
     public void MonsterAggroCheck()
     {
-        Debug.Log("Checking monster range");
         for(int i = 0; i < monsters.Count; i++)
         {
             monsterDistCheck( monsters[i] );
@@ -63,7 +62,7 @@ public class MonsterGenerator : MonoBehaviour {
     private void monsterDistCheck(Monster m)
     {
         if( m.state == Monster.State.Patroling &&
-            m.aggroRange > Vector3.Distance(m.GetPosition().ToVec3(), GameData.playerCharacter.pos.ToVec3()))
+            m.aggroRange > Vector3.Distance(m.GetPosition().ToVec3(), GameData.playerCharacter.Pos.ToVec3()))
         {
             m.aggro();
         }

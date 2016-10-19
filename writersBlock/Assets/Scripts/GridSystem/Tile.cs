@@ -8,6 +8,8 @@ public class Tile {
     bool isWalkable = true;
     bool isExit = false;
 
+    GamePiece occupant = null;
+
     public Tile(Vec2i pos, bool walkAble)
     {
         this.pos = pos;
@@ -32,6 +34,24 @@ public class Tile {
     public void setWalkability(bool b)
     {
         isWalkable = b;
+    }
+
+    public void setGamePiece(GamePiece p)
+    {
+        occupant = p;
+    }
+
+    public bool isTileOccupied()
+    {
+        if (occupant == null)
+            return false;
+        else
+            return true;
+    }
+
+    public GamePiece getTileOccupant()
+    {
+        return occupant;
     }
 
 }

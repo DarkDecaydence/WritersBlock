@@ -46,6 +46,8 @@ public class AStarSearch : MonoBehaviour, IShortestPath<Vec2i, Vec2i>
 
     public float ActualCost(Vec2i fromState, Vec2i action)
     {
+        if (GameData.grid.getTile(fromState + action).isTileOccupied())
+            return 5f;
         return 1f;
     }
 

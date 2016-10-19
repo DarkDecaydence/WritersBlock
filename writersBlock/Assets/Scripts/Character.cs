@@ -11,19 +11,18 @@ public class Character : GamePiece
 
     public void setPostion(Vec2i newPos)
     {
-        pos = newPos;
+        updateDataPosition(newPos);
         updatePosition();
     }
 
     public bool move(Vec2i dist)
     {
         Tile next = GameData.grid.getTile(pos + dist);
-        if (next == null || !next.isWalkAble()) { 
+        if (next == null || !next.isWalkAble() || next.isTileOccupied()) { 
             GameData.audioManager.PlayPlayer("PlayerBlocked");
             return false;
         }
 
-        Debug.Log(next.isWalkAble() + " "+  next.ToString());
         if (next.isTileExit())
         {
             GameData.audioManager.PlayVictory();
@@ -31,14 +30,15 @@ public class Character : GamePiece
             return true;
         }
 
-        GameData.monsterGenerator.MonsterAggroCheck();
-
-        pos += dist;
         // Lerp player position while playing audio.
         // Player movement audio is 0.5s length.
         GameData.audioManager.PlayPlayer("PlayerWalkCycle");
+        updateDataPosition(pos + dist);
         updatePosition();
-        Debug.Log(pos);
+        
+        //Check for monster aggro
+        GameData.monsterGenerator.MonsterAggroCheck();
+
         return true;
     }
 

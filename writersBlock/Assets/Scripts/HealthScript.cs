@@ -4,7 +4,7 @@ using System.Collections;
 
 public class HealthScript : MonoBehaviour {
 
-    float maxHealth = 100f;
+    float maxHealth = 100;
     float health;
 
     Slider healthBar;

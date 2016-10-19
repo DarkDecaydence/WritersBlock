@@ -22,9 +22,13 @@ public class Grid : MonoBehaviour {
         GameData.grid = this;
     }
 
-    public void createGrid()
+    public void CreateGridData()
     {
         createGridData();
+    }
+
+    public void CreateGridMesh()
+    {
         createGridMesh();
     }
 
@@ -47,7 +51,6 @@ public class Grid : MonoBehaviour {
         }
 
         Vec2i exitPos = new Vec2i(GetTotalSizeX - 2, GetTotalSizeY - 2);
-        Debug.Log(exitPos.ToString());
         grid[exitPos.x, exitPos.y].setExit(true);
         grid[exitPos.x, exitPos.y].setWalkability(true);
         grid[1, 1].setWalkability(true);

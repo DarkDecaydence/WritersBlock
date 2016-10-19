@@ -7,4 +7,12 @@ public class GamePiece : MonoBehaviour {
 
     public Vec2i Pos { get { return pos; } }
 
+    protected void updateDataPosition(Vec2i newPos)
+    {
+
+        GameData.grid.getTile(pos).setGamePiece(null);
+        GameData.grid.getTile(newPos).setGamePiece(this);
+        pos = newPos;
+
+    }
 }

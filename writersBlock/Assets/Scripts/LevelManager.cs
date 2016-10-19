@@ -44,7 +44,7 @@ public class LevelManager : MonoBehaviour {
 
         GameData.grid.CreateGridMesh();
         GameData.playerCharacter.setPostion(new Vec2i(1, 1));
-        GameData.monsterGenerator.GenerateMonsters(5);
+        GameData.monsterGenerator.GenerateMonsters(2);
 
         blackScreen.startFadeOut();
 
