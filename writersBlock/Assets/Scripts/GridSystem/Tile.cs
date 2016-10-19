@@ -4,17 +4,34 @@ using System.Collections;
 public class Tile {
 
     public Vec2i pos;
-    bool walkAble = true;
+
+    bool isWalkable = true;
+    bool isExit = false;
 
     public Tile(Vec2i pos, bool walkAble)
     {
         this.pos = pos;
-        this.walkAble = walkAble;
+        this.isWalkable = walkAble;
     }
 
     public bool isWalkAble()
     {
-        return walkAble;
+        return isWalkable;
+    }
+
+    public bool isTileExit()
+    {
+        return isExit;
+    }
+
+    public void setExit(bool b)
+    {
+        isExit = b;
+    }
+
+    public void setWalkability(bool b)
+    {
+        isWalkable = b;
     }
 
 }

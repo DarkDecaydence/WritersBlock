@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+public enum MonsterElement {  None, Arcane, Earth, Water, Fire, Air, Void }
+
 public class Monster : MonoBehaviour {
 
     Vec2i pos;
@@ -24,17 +26,20 @@ public class Monster : MonoBehaviour {
     float attackTime = 2f;
     float attackValue = 10f;
 
-    State state;
-    enum State { idle, move, attack}
+    public State state;
+    public enum State { Patroling, idle, move, attack}
+
+    public MonsterElement Element;
+
+    public float aggroRange = 7f;
 
 	// Use this for initialization
-	void Start ()
+	public void Init (Vec2i pos)
     {
-
-        state = State.idle;
-        pos = new Vec2i(5, 5);
+        this.pos = pos;
         setObjectPosition(pos);
-        updatePath(pos);
+
+        state = State.Patroling;
 
     }
 
@@ -50,6 +55,8 @@ public class Monster : MonoBehaviour {
     {
         switch (state)
         {
+            case State.Patroling:
+                break;
             case State.idle:
                 idleBehavior();
                 break;
@@ -166,6 +173,13 @@ public class Monster : MonoBehaviour {
         nextPos = pos + path[0];
         pathIndex = 0;
         timer2 = 0;
+    }
+
+    public void aggro()
+    {
+        Debug.Log("I just got aggored warrrrhh");
+        state = State.move;
+        updatePath(pos);
     }
 
     bool nextToTarget()

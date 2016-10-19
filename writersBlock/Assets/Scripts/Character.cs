@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 
 public class Character : MonoBehaviour
 {
@@ -9,7 +8,6 @@ public class Character : MonoBehaviour
     void Awake()
     {
         GameData.playerCharacter = this;
-        setPostion(new Vec2i(1, 1));
     }
 
     public void setPostion(Vec2i newPos)
@@ -27,6 +25,15 @@ public class Character : MonoBehaviour
         if (!next.isWalkAble())
             return false;
 
+        Debug.Log(next.isWalkAble() + " "+  next.ToString());
+        if (next.isTileExit())
+        {
+            winLevel();
+            return true;
+        }
+
+        GameData.monsterGenerator.MonsterAggroCheck();
+
         pos += dist;
         updatePosition();
         Debug.Log(pos);
@@ -36,5 +43,10 @@ public class Character : MonoBehaviour
     public void updatePosition()
     {
         transform.position = new Vector3(pos.x + TileMetrics.tileHalfLength, transform.position.y, pos.y + TileMetrics.tileHalfLength);
+    }
+
+    void winLevel()
+    {
+        GameData.levelManager.advanceLevel();
     }
 }

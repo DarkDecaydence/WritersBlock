@@ -21,7 +21,7 @@ public static class TileMetrics {
 
     public static Texture2D noiseSource;
 
-    public const float tilePerturbStrength = 0f;
+    public const float tilePerturbStrength = 0.1f;
 
     public const float noiseScale = 0.003f;
 
