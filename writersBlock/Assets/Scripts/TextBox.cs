@@ -62,12 +62,14 @@ public class TextBox : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
+        antiCheatMeasure();
+
         if (Input.GetKeyDown(KeyCode.Return))
         {
 
             Message message = translater.interpretMessage(inputArea.text);
-
-            if(message.valid)
+            
+            if (message.valid)
                 pushMessageToBox(inputArea.text, Color.black);
             else
                 pushMessageToBox(message.errMessage, Color.red);
@@ -75,7 +77,16 @@ public class TextBox : MonoBehaviour {
             clearInputBox();
             focusOnInputField();
 
-        }
-            
+        }       
 	}
+
+    void antiCheatMeasure()
+    {
+        if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            && Input.GetKeyDown(KeyCode.V))
+        {
+            pushMessageToBox("Stop cheating you son of a #%&!", Color.green);
+            inputArea.text = "";
+        }
+    }
 }

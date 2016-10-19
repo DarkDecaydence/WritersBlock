@@ -8,6 +8,9 @@ public class Grid : MonoBehaviour {
     public int sizeX = 5, sizeY = 5;
     public int chunkSizeX = 1, chunkSizeY = 1;
 
+    public int GetTotalSizeX { get { return grid.GetLength(1); } }
+    public int GetTotalSizeY { get { return grid.GetLength(0); } }
+
     public GameObject gridChunk;
     List<GridMesh> gridChunks;
 
@@ -17,20 +20,25 @@ public class Grid : MonoBehaviour {
     {
         TileMetrics.noiseSource = noiseSource;
         GameData.grid = this;
-        grid = new Tile[sizeX * chunkSizeX, sizeY * chunkSizeY];
-        createGridMesh();
-
     }
 
-    void createGridMesh()
+    public void createGrid()
     {
+        createGridData();
+        createGridMesh();
+    }
+
+    void createGridData()
+    {
+
+        grid = new Tile[sizeX * chunkSizeX, sizeY * chunkSizeY];
         for (int x = 0; x < grid.GetLength(1); x++)
         {
             for (int y = 0; y < grid.GetLength(0); y++)
             {
                 bool b = System.Convert.ToBoolean(Random.Range(0, 6));
 
-                if(x == 0 || y == 0 || x == grid.GetLength(1) - 1 || y == grid.GetLength(0) - 1)
+                if (x == 0 || y == 0 || x == grid.GetLength(1) - 1 || y == grid.GetLength(0) - 1)
                     grid[x, y] = new Tile(new Vec2i(x, y), false);
                 else
                     grid[x, y] = new Tile(new Vec2i(x, y), b);
@@ -38,6 +46,17 @@ public class Grid : MonoBehaviour {
             }
         }
 
+        Vec2i exitPos = new Vec2i(GetTotalSizeX - 2, GetTotalSizeY - 2);
+        Debug.Log(exitPos.ToString());
+        grid[exitPos.x, exitPos.y].setExit(true);
+        grid[exitPos.x, exitPos.y].setWalkability(true);
+        grid[1, 1].setWalkability(true);
+
+    }
+
+    void createGridMesh()
+    {
+        clearChildren();
         gridChunks = new List<GridMesh>();
         for (int i = 0; i < chunkSizeX * chunkSizeY; i++)
         {
@@ -61,5 +80,13 @@ public class Grid : MonoBehaviour {
         if(pos.x >= 0 && pos.x < grid.GetLength(1) && pos.y >= 0 && pos.y < grid.GetLength(0))
             return grid[pos.x, pos.y];
         return null;
+    }
+
+    void clearChildren()
+    {
+        foreach (Transform child in transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 }

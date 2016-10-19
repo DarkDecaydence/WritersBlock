@@ -8,5 +8,7 @@ public static class GameData {
     public static TextBox textBox;
     public static AStarSearch aStar;
     public static AudioManager audioManager;
+    public static MonsterGenerator monsterGenerator;
+    public static LevelManager levelManager;
 
 }

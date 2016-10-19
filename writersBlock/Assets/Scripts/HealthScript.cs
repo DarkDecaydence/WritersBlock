@@ -9,12 +9,10 @@ public class HealthScript : MonoBehaviour {
 
     Slider healthBar;
 
-    public WorldUIManager uiManager;
-
     void Awake()
     {
 
-        healthBar = uiManager.instantiateHealthbar();
+        healthBar = GameObject.Find("WorldCanvas").GetComponent<WorldUIManager>().instantiateHealthbar();
         setLife(maxHealth);
 
     }
@@ -27,7 +25,7 @@ public class HealthScript : MonoBehaviour {
     void updateHealthbarPos()
     {
 
-        healthBar.gameObject.transform.position = gameObject.transform.position + new Vector3(0, 1, 0);
+        healthBar.gameObject.transform.position = gameObject.transform.position + new Vector3(0, 1.5f, 0);
 
     }
 
@@ -51,6 +49,15 @@ public class HealthScript : MonoBehaviour {
             killObj();
         }
 
+        if (gameObject.CompareTag("Monster"))
+        {
+            Monster m = gameObject.GetComponent<Monster>();
+            if(m != null)
+            {
+                if (m.state == Monster.State.Patroling)
+                    m.aggro();
+            }
+        }
     }
 
     void updateHealthBarVisuals()
@@ -60,7 +67,17 @@ public class HealthScript : MonoBehaviour {
 
     public void killObj()
     {
+        removeMonsterFromList();
+        Destroy(healthBar.gameObject);
         Destroy(this.gameObject);
+    }
+
+    void removeMonsterFromList()
+    {
+        if (gameObject.CompareTag("Monster"))
+        {
+            GameData.monsterGenerator.killMonster(gameObject.GetComponent<Monster>());
+        }
     }
 
 }
