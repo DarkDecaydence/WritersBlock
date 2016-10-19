@@ -16,6 +16,11 @@ public class Incantation : MonoBehaviour
         return EnumUtil.GetValues<SpellElement>().FirstOrDefault(s => EnumUtil.Parse<SpellElement>(s) == e);
     }
 
+    public static string MonsterElementName(MonsterElement e)
+    {
+        return EnumUtil.GetValues<MonsterElement>().FirstOrDefault(s => EnumUtil.Parse<MonsterElement>(s) == e);
+    }
+
     public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
     {
         if (spellPrefab != null) { 
@@ -139,12 +144,14 @@ public class Incantation : MonoBehaviour
         }
         
         Destroy(gameObject);
-
     }
 
     private float CalculateMultiplier(SpellElement sElem, MonsterElement mElem)
     {
         // If monster has no element, default multiplier should return.
+        // If monster and element are equal, spell should be highly ineffective.
+        if (SpellElementName(sElem) == MonsterElementName(mElem))
+            return 0.1f;
 
         // Calculating monster weaknesses.
         if (mElem == MonsterElement.Fire) {

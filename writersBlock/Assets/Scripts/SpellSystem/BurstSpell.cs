@@ -6,6 +6,36 @@ using UnityEngine;
 
 public class BurstSpell : MonoBehaviour
 {
+    #region Static methods
+    public static string SpellElementName(SpellElement e)
+    {
+        return EnumUtil.GetValues<SpellElement>().FirstOrDefault(s => EnumUtil.Parse<SpellElement>(s) == e);
+    }
+
+    //public static void SpawnIncantation(GameObject source, GameObject spellPrefab, SpellData data, Vector2 direction)
+    //{
+    //    if (spellPrefab != null) {
+    //        var newGObj = Instantiate<GameObject>(spellPrefab);
+    //        var newIncantation = newGObj.GetComponent<BurstSpell>();
+    //        newGObj.transform.position = source.transform.position;
+    //        newGObj.transform.localScale = new Vector3(data.Size, data.Size, data.Size);
+    //        newIncantation.data = data;
+    //        newIncantation.Position = source.GetComponent<Character>().Pos;
+    //        newIncantation.Direction = direction;
+
+    //        if (data.SpellElement != SpellElement.Invalid) {
+    //            GameData.audioManager.PlaySpell(SpellElementName(data.SpellElement) + "Spell");
+    //        }
+    //        else {
+    //            GameData.audioManager.PlaySpell("Fizzle");
+    //        }
+    //    }
+    //    else {
+    //        Debug.LogError("Derp, no such spell. Try again later.");
+    //    }
+    //}
+    #endregion
+
     private SpellData data;
     private Vector2 Direction;
     private Vec2i Position;
@@ -29,6 +59,9 @@ public class BurstSpell : MonoBehaviour
             var curX = (curY - 1) * -1;
             while (Math.Abs(curX) < curY) {
                 // Check tile (curX, curY) for monsters and damage them.
+                var targetTile = new Vec2i(curX, curY);
+                // Rotate targetTile to direction, since targetTile assumes that spell is pointed upwards.
+                curX++;
             }
             yield return new WaitForSeconds(0.2f);
         }
