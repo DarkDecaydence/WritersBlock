@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource AudioPlayer;
 
     public List<AudioClip> MusicClips;
+    private int musicIdx;
 
     private Dictionary<string, AudioClip> dictSpellClips = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> dictPlayerClips = new Dictionary<string, AudioClip>();
@@ -40,6 +42,9 @@ public class AudioManager : MonoBehaviour
 
         Debug.Log("Loading remaining audio...");
         victoryClip = Resources.Load<AudioClip>("Audio/Sounds/NewFloorSound");
+
+        Debug.Log("Starting music looping...");
+        StartCoroutine(CoLoopMusic());
     }
 
     
@@ -77,5 +82,14 @@ public class AudioManager : MonoBehaviour
     public void PlayVictory()
     {
         AudioPlayer.PlayOneShot(victoryClip);
+    }
+
+    private IEnumerator CoLoopMusic()
+    {
+        while (true) { 
+            AudioPlayer.PlayOneShot(MusicClips[musicIdx]);
+            yield return new WaitForSeconds(MusicClips[musicIdx].length);
+            musicIdx = (musicIdx + 1) % MusicClips.Count;
+        }
     }
 }
