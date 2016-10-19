@@ -21,25 +21,25 @@ public class AudioManager : MonoBehaviour
         GameData.audioManager = this;
 
         Debug.Log("Loading spell audio...");
-        var spells = Resources.LoadAll<AudioClip>("Sounds/Spells");
+        var spells = Resources.LoadAll<AudioClip>("Audio/Sounds/Spells");
         foreach (AudioClip ac in spells) {
             dictSpellClips.Add(ac.name, ac);
         }
 
         Debug.Log("Loading player audio...");
-        var player = Resources.LoadAll<AudioClip>("Sounds/Player");
+        var player = Resources.LoadAll<AudioClip>("Audio/Sounds/Player");
         foreach (AudioClip ac in player) {
             dictPlayerClips.Add(ac.name, ac);
         }
 
         Debug.Log("Loading monsters audio...");
-        var monsters = Resources.LoadAll<AudioClip>("Sounds/Monsters");
+        var monsters = Resources.LoadAll<AudioClip>("Audio/Sounds/Monsters");
         foreach (AudioClip ac in monsters) {
             dictMonsterClips.Add(ac.name, ac);
         }
 
         Debug.Log("Loading remaining audio...");
-        victoryClip = Resources.Load<AudioClip>("Sounds/NewFloorSound");
+        victoryClip = Resources.Load<AudioClip>("Audio/Sounds/NewFloorSound");
     }
 
     
