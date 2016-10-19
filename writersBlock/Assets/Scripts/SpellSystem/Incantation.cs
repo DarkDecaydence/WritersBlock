@@ -32,9 +32,14 @@ public class Incantation : MonoBehaviour
             } else {
                 GameData.audioManager.PlaySpell("Fizzle");
             }
-        } else {
+
+            //Sets the game object to true
+            newGObj.SetActive(true);
+        }
+        else {
             Debug.LogError("Derp, no such spell. Try again later.");
         }
+
     }
     #endregion
 
@@ -123,8 +128,12 @@ public class Incantation : MonoBehaviour
             gameObject.GetComponent<ParticleSystem>().Stop();
         Transform child = transform.FindChild("Point light");
         Light l;
+        float lIn = 1f;
         if (child != null)
+        {
             l = child.GetComponent<Light>();
+            lIn = l.intensity;
+        }     
         else
             l = null;
 
@@ -134,7 +143,7 @@ public class Incantation : MonoBehaviour
         {
             t += tSplit;
             if(l != null)
-                l.intensity = 1 - t;
+                l.intensity = lIn - t;
             yield return new WaitForSeconds(tSplit);
         }
         
@@ -179,7 +188,6 @@ public class Incantation : MonoBehaviour
     {
         if (rotate)
         {
-            Debug.Log(Direction);
             transform.Rotate(new Vector3(Direction.y, 0, Direction.x));
 
         }
