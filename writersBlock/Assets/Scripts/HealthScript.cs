@@ -39,6 +39,8 @@ public class HealthScript : MonoBehaviour {
 
     }
 
+    // Split such that player and monster have "different" health scripts for death and damage sound purposes.
+    // Should be done during refactoring.
     public void addHealth(float f)
     {
 

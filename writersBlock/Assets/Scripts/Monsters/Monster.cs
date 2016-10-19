@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+public enum MonsterElement
+{
+    None, Earth, Water, Fire, Air, Arcane, Void
+}
+
 public class Monster : MonoBehaviour {
 
     Vec2i pos;
@@ -26,6 +31,8 @@ public class Monster : MonoBehaviour {
 
     State state;
     enum State { idle, move, attack}
+
+    public MonsterElement Element;
 
 	// Use this for initialization
 	void Start ()

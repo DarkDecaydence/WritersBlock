@@ -21,13 +21,15 @@ public class Character : MonoBehaviour
     public bool move(Vec2i dist)
     {
         Tile next = GameData.grid.getTile(pos + dist);
-        if (next == null)
+        if (next == null || !next.isWalkAble()) { 
+            GameData.audioManager.PlayPlayer("PlayerBlocked");
             return false;
-
-        if (!next.isWalkAble())
-            return false;
+        }
 
         pos += dist;
+        // Lerp player position while playing audio.
+        // Player movement audio is 0.5s length.
+        GameData.audioManager.PlayPlayer("PlayerWalk");
         updatePosition();
         Debug.Log(pos);
         return true;
