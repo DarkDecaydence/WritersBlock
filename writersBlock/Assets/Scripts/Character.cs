@@ -18,15 +18,15 @@ public class Character : GamePiece
     public bool move(Vec2i dist)
     {
         Tile next = GameData.grid.getTile(pos + dist);
-        if (next == null)
+        if (next == null || !next.isWalkAble()) { 
+            GameData.audioManager.PlayPlayer("PlayerBlocked");
             return false;
-
-        if (!next.isWalkAble())
-            return false;
+        }
 
         Debug.Log(next.isWalkAble() + " "+  next.ToString());
         if (next.isTileExit())
         {
+            GameData.audioManager.PlayVictory();
             winLevel();
             return true;
         }
@@ -34,6 +34,9 @@ public class Character : GamePiece
         GameData.monsterGenerator.MonsterAggroCheck();
 
         pos += dist;
+        // Lerp player position while playing audio.
+        // Player movement audio is 0.5s length.
+        GameData.audioManager.PlayPlayer("PlayerWalkCycle");
         updatePosition();
         Debug.Log(pos);
         return true;
