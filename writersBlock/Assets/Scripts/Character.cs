@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Character : MonoBehaviour
+public class Character : GamePiece
 {
-    public Vec2i pos;
 
     void Awake()
     {

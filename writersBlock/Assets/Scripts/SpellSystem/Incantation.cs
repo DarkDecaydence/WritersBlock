@@ -24,7 +24,7 @@ public class Incantation : MonoBehaviour
             newGObj.transform.position = source.transform.position;
             newGObj.transform.localScale = new Vector3(data.Size, data.Size, data.Size);
             newIncantation.data = data;
-            newIncantation.Position = source.GetComponent<Character>().pos;
+            newIncantation.Position = source.GetComponent<Character>().Pos;
             newIncantation.Direction = direction;
 
             if (data.SpellElement != SpellElement.Invalid) {
