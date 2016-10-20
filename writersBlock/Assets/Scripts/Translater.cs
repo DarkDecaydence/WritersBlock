@@ -29,7 +29,7 @@ public class Translater : MonoBehaviour
             case "cast":
                 return interpretSpell(partMessages);
             default:
-                return new Message(false, "*WinkyFace*");
+                return new Message(false, "You tripped on a smell pebble!");
         }
     }
 
@@ -41,7 +41,7 @@ public class Translater : MonoBehaviour
     private Message interpretMove(string[] partMessages)
     {
         if (partMessages.Length <= 1)
-            return new Message(false, "Specify a direction move you dumbnut");
+            return new Message(false, "Specify a direction you dumbnut");
 
         string direction = partMessages[1];
         bool moveValidity = false;
@@ -51,7 +51,7 @@ public class Translater : MonoBehaviour
             return new Message(false, ex.Message);
         }
 
-        return new Message(moveValidity, "Slamming into a wall eh?");
+        return new Message(moveValidity, "You slammed your face into the wall!");
     }
 
     private Message interpretSpell(string[] partMessages)
@@ -112,7 +112,7 @@ public class Translater : MonoBehaviour
             case "down":
                 dirVec = new Vec2i(0, -1); break;
             default:
-                throw new InvalidDirectionException(string.Format("Cannot move in direction '{0}'; try directions 'up', 'down', 'left', 'right'", dir));
+                throw new InvalidDirectionException(string.Format("Cannot move in direction '{0}'!", dir));
         }
 
         return dirVec;
